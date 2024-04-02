@@ -39,9 +39,12 @@ namespace BallGame.Gameplay
 
         void InfectObstacles()
         {
+            Debug.Log("Infecting obstacles");
+            
             float currentExplosionRadius = explosionRadius * transform.localScale.x;
 
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, currentExplosionRadius);
+        
             foreach (var hitCollider in hitColliders)
             {
                 if (hitCollider.gameObject.CompareTag("Obstacle"))

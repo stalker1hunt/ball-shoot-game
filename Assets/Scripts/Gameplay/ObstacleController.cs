@@ -8,10 +8,7 @@ namespace BallGame.Gameplay
 
         public void Infect()
         {
-            if (explosionEffect != null)
-                Instantiate(explosionEffect, transform.position, Quaternion.identity);
-
-            Destroy(gameObject);
+            gameObject.AddComponent<Infection>().StartInfection();
         }
     }
 }

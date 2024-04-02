@@ -1,30 +1,28 @@
 ﻿using System.Collections;
+using BallGame.Configs;
+using BallGame.Instance;
 using UnityEngine;
 
 namespace BallGame.Gameplay
 {
     public class Infection : MonoBehaviour
     {
-        public Material infectedMaterial;
-        public float infectionSpeed = 1f;
-        public Vector3 infectedScale = new Vector3(1.2f, 1.2f, 1.2f);
-        public ParticleSystem explosionEffect;
-
+        private ObjectFactory<ParticleSystem> _particleSystemFactory;
+        private InfectionConfig _infectionConfig;
+        
         private float infectionProgress = 0f;
         private bool isInfected = false;
 
-        void Update()
+        private void Update()
         {
             if (isInfected && infectionProgress < 1f)
             {
-                infectionProgress += Time.deltaTime * infectionSpeed;
-                infectedMaterial.SetFloat("_FillHeight", infectionProgress);
+                infectionProgress += Time.deltaTime * _infectionConfig.InfectionSpeed;
+                _infectionConfig.InfectedMaterial.SetFloat("_FillHeight", infectionProgress);
 
                 if (infectionProgress >= 1f)
                 {
                     StartCoroutine(ScaleUp());
-
-                    explosionEffect.Play();
 
                     isInfected = false;
                 }
@@ -38,17 +36,29 @@ namespace BallGame.Gameplay
 
             while (timer <= 1f)
             {
-                transform.localScale = Vector3.Lerp(initialScale, infectedScale, timer);
+                transform.localScale = Vector3.Lerp(initialScale, _infectionConfig.InfectedScale, timer);
                 timer += Time.deltaTime;
                 yield return null;
             }
-
-            transform.localScale = infectedScale;
+            
+            var explosionEffect = _particleSystemFactory.CreateObject();
+            explosionEffect.transform.position = transform.position;
+            explosionEffect.Play();
+            
+            transform.localScale = _infectionConfig.InfectedScale;
+            yield return new WaitForSeconds(0.5f);
+            
+            _particleSystemFactory.ReleaseObject(explosionEffect);
+            gameObject.SetActive(false);
         }
 
         public void StartInfection()
         {
-            GetComponent<Renderer>().material = infectedMaterial;
+            _particleSystemFactory = ServiceLocator.GetService<ObjectFactory<ParticleSystem>>();
+            _infectionConfig = ServiceLocator.GetService<ConfigService>()
+                .GetConfig<InfectionConfig>(ConfigsConstants.InfectionConfigKey);
+            
+            GetComponent<Renderer>().material = _infectionConfig.InfectedMaterial;
             isInfected = true;
         }
     }

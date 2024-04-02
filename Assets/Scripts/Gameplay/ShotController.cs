@@ -1,17 +1,19 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace BallGame.Gameplay
 {
     public class ShotController : MonoBehaviour
     {
-        public float explosionRadius = 5f;
-        
+        public float explosionRadius = 20f;
+        public float delayBetweenInfections = 0.1f;
         public float speed = 10f;
 
         private Rigidbody rb;
         public float stoppingDistance = 0.1f;
 
-        
         private Transform target;
         
         private void Start()
@@ -31,24 +33,53 @@ namespace BallGame.Gameplay
             if (other.gameObject.CompareTag("Obstacle"))
             {
                 InfectObstacles();
-                Destroy(gameObject);
+                gameObject.SetActive(false);
             }
         }
 
         void InfectObstacles()
         {
             Debug.Log("Infecting obstacles");
-            
+            StartExplosionSequence();
+        }
+        
+        private void StartExplosionSequence()
+        {
+            CoroutineManager.Instance.StartInfectionCoroutine("infection1", InfectObstaclesSequentially());
+        }
+
+        private IEnumerator InfectObstaclesSequentially()
+        {
             float currentExplosionRadius = explosionRadius * transform.localScale.x;
 
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, currentExplosionRadius);
-        
+
+            List<ObstacleController> obstaclesToInfect = new List<ObstacleController>();
+
             foreach (var hitCollider in hitColliders)
             {
-                if (hitCollider.gameObject.CompareTag("Obstacle"))
+                ObstacleController obstacleController = hitCollider.GetComponent<ObstacleController>();
+                if (obstacleController != null)
                 {
-                    hitCollider.gameObject.GetComponent<ObstacleController>().Infect();
+                    obstaclesToInfect.Add(obstacleController);
                 }
+            }
+            
+            Debug.Log(hitColliders.Length + " obstacles to infect");
+
+            for (var index = 0; index < obstaclesToInfect.Count; index++)
+            {
+                var obstacle = obstaclesToInfect[index];
+                try
+                {
+                    obstacle.Infect();
+                }
+                catch (Exception e)
+                {
+                    Debug.LogException(e);
+                }
+
+                yield return new WaitForSeconds(delayBetweenInfections);
             }
         }
         
@@ -56,19 +87,6 @@ namespace BallGame.Gameplay
         {
             explosionRadius *= scale;
         }
-
-        /*
-        private void Update()
-        {
-            if(target == null) return;
-            
-            transform.position = Vector3.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
-
-            if (Vector3.Distance(transform.position, target.position) < 0.1f)
-            {
-              //  Destroy(gameObject);
-            }
-        }*/
         
         private void FixedUpdate()
         {

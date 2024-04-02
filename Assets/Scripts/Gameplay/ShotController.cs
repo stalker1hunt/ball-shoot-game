@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace BallGame.Gameplay
 {
@@ -8,7 +7,6 @@ namespace BallGame.Gameplay
         public float explosionRadius = 5f;
         
         public float speed = 10f;
-
 
         private Rigidbody rb;
         public float stoppingDistance = 0.1f;

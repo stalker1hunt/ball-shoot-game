@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using BallGame.Configs;
 using BallGame.Instance;
+using BallGame.StateMachine.States;
 using UnityEngine;
 
 namespace BallGame.Initialization
@@ -12,11 +13,19 @@ namespace BallGame.Initialization
         private void Awake()
         {
             var configService = new ConfigService();
+            
             var infectionConfig = configService.GetConfig<InfectionConfig>(ConfigsConstants.InfectionConfigKey);
             var particleSystemFactory = new ObjectFactory<ParticleSystem>(infectionConfig.InfectionEffect);
             
+            var stateMachine = new StateMachine.StateMachine();
+            stateMachine.ChangeState(new StartState());
+            
+            //var ballFactory = new ObjectFactory<Ball>(infectionConfig.BallPrefab);
+            
             AddInitializationCommand(new RegisterServiceCommand<ObjectFactory<ParticleSystem>>(particleSystemFactory));
-            AddInitializationCommand(new RegisterServiceCommand<ConfigService>(new ConfigService()));
+            AddInitializationCommand(new RegisterServiceCommand<ConfigService>(configService));
+            AddInitializationCommand(new RegisterServiceCommand<StateMachine.StateMachine>(stateMachine));
+            
             
             foreach (var command in _initializationCommands)
             {

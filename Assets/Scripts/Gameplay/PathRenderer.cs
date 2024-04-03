@@ -4,44 +4,40 @@ namespace BallGame.Gameplay
 {
     public class PathRenderer : MonoBehaviour
     {
-        public Transform startPoint;
-        public Transform endPoint;
-        private LineRenderer lineRenderer;
+        public Transform playerTransform;
+        public Transform doorTransform;
+        private GameObject pathCube;
 
         private void Start()
         {
-            lineRenderer = GetComponent<LineRenderer>();
-            
-            lineRenderer.startWidth = 1f;
-            lineRenderer.endWidth = 1f;
+            pathCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            Destroy(pathCube.GetComponent<BoxCollider>());
 
-            Gradient gradient = new Gradient();
-            gradient.SetKeys(
-                new GradientColorKey[] { new GradientColorKey(Color.yellow, 0.0f), new GradientColorKey(Color.red, 1.0f) },
-                new GradientAlphaKey[] { new GradientAlphaKey(1.0f, 0.0f), new GradientAlphaKey(0.0f, 1.0f) }
-            );
-            lineRenderer.colorGradient = gradient;
+            pathCube.GetComponent<Renderer>().material.color = Color.yellow;
 
-            lineRenderer.textureMode = LineTextureMode.Tile;
-
-            lineRenderer.numCornerVertices = 5;
-            lineRenderer.numCapVertices = 2;
-            
             UpdatePath();
         }
 
         private void UpdatePath()
         {
-            lineRenderer.positionCount = 2;
-            lineRenderer.SetPosition(0, startPoint.position);
-            lineRenderer.SetPosition(1, endPoint.position);
+            Vector3 startPoint = playerTransform.position;
+            Vector3 endPoint = doorTransform.position;
+
+            Vector3 direction = (endPoint - startPoint).normalized;
+            float distance = Vector3.Distance(startPoint, endPoint);
+
+            pathCube.transform.position = startPoint + direction * distance / 2;
+            pathCube.transform.localScale = new Vector3(1f, 0.1f, distance);
+            pathCube.transform.LookAt(doorTransform.position); // Куб "дивиться" на двері
         }
 
         private void Update()
         {
-            if (startPoint.hasChanged || endPoint.hasChanged)
+            if (playerTransform.hasChanged || doorTransform.hasChanged)
             {
                 UpdatePath();
+                playerTransform.hasChanged = false;
+                doorTransform.hasChanged = false;
             }
         }
     }

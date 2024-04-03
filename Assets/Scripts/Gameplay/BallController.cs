@@ -61,7 +61,7 @@ namespace BallGame.Gameplay
                 ReleaseShot();
             }
         }
-
+        
         private void ReleaseShot()
         {
             if (currentShot != null)

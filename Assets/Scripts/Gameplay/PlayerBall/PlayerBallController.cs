@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-namespace BallGame.Gameplay
+namespace BallGame.Gameplay.PlayerBall
 {
-    public class BallController : MonoBehaviour
+    public class PlayerBallController : MonoBehaviour
     {
         public ShotController shotPrefab;
         public Transform shotSpawnPoint;
@@ -16,22 +16,47 @@ namespace BallGame.Gameplay
 
         private void Update()
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.touchCount > 0)
             {
-                CreateShot();
-            }
+                Touch touch = Input.GetTouch(0);
 
-            if (Input.GetMouseButton(0))
-            {
-                if (currentShot != null)
+                if (touch.phase == TouchPhase.Began)
                 {
-                    ChargeShot();
+                    CreateShot();
+                }
+
+                if (touch.phase == TouchPhase.Stationary || touch.phase == TouchPhase.Moved)
+                {
+                    if (currentShot != null)
+                    {
+                        ChargeShot();
+                    }
+                }
+
+                if (touch.phase == TouchPhase.Ended)
+                {
+                    ReleaseShot();
                 }
             }
-
-            if (Input.GetMouseButtonUp(0))
+            else
             {
-                ReleaseShot();
+                if (Input.GetMouseButtonDown(0))
+                {
+                    CreateShot();
+                }
+
+                if (Input.GetMouseButton(0))
+                {
+                    if (currentShot != null)
+                    {
+                        ChargeShot();
+                    }
+                }
+
+                if (Input.GetMouseButtonUp(0))
+                {
+                    ReleaseShot();
+                }
             }
         }
 

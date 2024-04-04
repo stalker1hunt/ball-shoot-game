@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using BallGame.Configs;
+using BallGame.Gameplay;
 using BallGame.Instance;
 using BallGame.StateMachine.States;
 using UnityEngine;
@@ -8,6 +9,9 @@ namespace BallGame.Initialization
 {
     public class InitializationController : MonoBehaviour
     {
+        [SerializeField]
+        private InitializationGameController _initializationGameController;
+
         private List<IInitializationCommand> _initializationCommands = new List<IInitializationCommand>();
 
         private void Awake()
@@ -26,14 +30,15 @@ namespace BallGame.Initialization
             AddInitializationCommand(new RegisterServiceCommand<ConfigService>(configService));
             AddInitializationCommand(new RegisterServiceCommand<StateMachine.StateMachine>(stateMachine));
             
-            
             foreach (var command in _initializationCommands)
             {
                 command.Execute();
             }
+            
+            _initializationGameController.Initialization();
         }
 
-        public void AddInitializationCommand(IInitializationCommand command)
+        private void AddInitializationCommand(IInitializationCommand command)
         {
             _initializationCommands.Add(command);
         }

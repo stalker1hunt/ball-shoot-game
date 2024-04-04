@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace BallGame.Gameplay
+namespace BallGame.Gameplay.PlayerBall
 {
-   public class PlayerMovement : MonoBehaviour
+    public class PlayerBallMovement : MonoBehaviour
     {
         public float jumpHeight = 1f;
         public float jumpDistance = 1f;

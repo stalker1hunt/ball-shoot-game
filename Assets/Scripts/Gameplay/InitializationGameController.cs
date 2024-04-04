@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using BallGame.Configs;
 using BallGame.Gameplay.PlayerBall;
 using BallGame.Initialization;
 using UnityEngine;
@@ -9,12 +10,20 @@ namespace BallGame.Gameplay
     {
         [SerializeField]
         private PlayerBallSpawnController _playerBallSpawnController;
-
-        private readonly List<IInitializationCommand> _initializationCommands = new List<IInitializationCommand>();
+        [SerializeField]
+        private DoorController _doorController;
+        
+        private readonly List<IInitializationCommand> _initializationCommands = new();
 
         public void Initialization()
         {
+            PlayerBallConfig playerBallConfig = ServiceLocator.GetService<ConfigService>()
+                .GetConfig<PlayerBallConfig>(ConfigsConstants.PlayerBallConfigKey);
+            
+            playerBallConfig.SetupTarget(_doorController.TargetPosition);
+            
             AddInitializationGameCommand(new InitializationGameCommand<PlayerBallSpawnController>(_playerBallSpawnController));
+            AddInitializationGameCommand(new InitializationGameCommand<DoorController>(_doorController));
             
             foreach (var command in _initializationCommands)
             {

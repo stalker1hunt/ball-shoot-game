@@ -320,6 +320,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerBallSpawnController: {fileID: 588294438}
+  _doorController: {fileID: 850599321}
 --- !u!1 &345991150
 GameObject:
   m_ObjectHideFlags: 0
@@ -787,8 +788,9 @@ GameObject:
   - component: {fileID: 850599320}
   - component: {fileID: 850599319}
   - component: {fileID: 850599318}
+  - component: {fileID: 850599321}
   m_Layer: 0
-  m_Name: Target
+  m_Name: Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -872,6 +874,21 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 850599316}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &850599321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 850599316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a11c0e6cf7049c2a6a8f4ef20609ee3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _targetPosition: {fileID: 850599317}
+  doorAnimator: {fileID: 0}
+  openDistance: 5
 --- !u!1 &892213538
 GameObject:
   m_ObjectHideFlags: 0

@@ -98,13 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfa279ca5a564426ae416bc1e954fc21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shotPrefab: {fileID: 1096227594533763633, guid: c8d23155782a1d840aa7aa91a5781c2d,
-    type: 3}
-  shotSpawnPoint: {fileID: 0}
-  target: {fileID: 0}
-  maxShotScale: 1
-  shotChargeRate: 1
-  minPlayerScale: 0.2
+  _shotSpawnPoint: {fileID: 3750191898849202434}
 --- !u!114 &3750191898849202439
 MonoBehaviour:
   m_ObjectHideFlags: 0

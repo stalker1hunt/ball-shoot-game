@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace BallGame.Gameplay
 {
-    public class ShotController : MonoBehaviour
+    public class BallShotController : MonoBehaviour
     {
         public float explosionRadius = 20f;
         public float delayBetweenInfections = 0.1f;
@@ -45,7 +45,7 @@ namespace BallGame.Gameplay
         
         private void StartExplosionSequence()
         {
-            CoroutineManager.Instance.StartInfectionCoroutine("infection1", InfectObstaclesSequentially());
+            CoroutineManager.Instance.StartCoroutine("infection1", InfectObstaclesSequentially());
         }
 
         private IEnumerator InfectObstaclesSequentially()

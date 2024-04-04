@@ -12,5 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7f36d9a202546638f95739765d9f5d3, type: 3}
   m_Name: PlayerBall
   m_EditorClassIdentifier: 
-  _playerBallPrefab: {fileID: 3750191898849202493, guid: 119d94b3f3c28b74d864d5d2aca6e3e2,
+  _playerBallPrefab: {fileID: 3750191898849202438, guid: 119d94b3f3c28b74d864d5d2aca6e3e2,
     type: 3}
+  _ballShotPrefab: {fileID: 1096227594533763633, guid: c8d23155782a1d840aa7aa91a5781c2d,
+    type: 3}
+  maxShotScale: 0.3
+  shotChargeRate: 0.5
+  minPlayerScale: 0.5

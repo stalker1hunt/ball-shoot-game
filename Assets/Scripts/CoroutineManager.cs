@@ -25,7 +25,7 @@ namespace BallGame
 
         private Dictionary<string, Coroutine> _activeCoroutines = new Dictionary<string, Coroutine>();
 
-        public void StartInfectionCoroutine(string coroutineId, IEnumerator coroutine)
+        public void StartCoroutine(string coroutineId, IEnumerator coroutine)
         {
             if (_activeCoroutines.ContainsKey(coroutineId))
             {
@@ -37,7 +37,7 @@ namespace BallGame
             _activeCoroutines[coroutineId] = newCoroutine;
         }
 
-        public void StopInfectionCoroutine(string coroutineId)
+        public void StopActiveCoroutine(string coroutineId)
         {
             if (_activeCoroutines.TryGetValue(coroutineId, out Coroutine coroutine))
             {

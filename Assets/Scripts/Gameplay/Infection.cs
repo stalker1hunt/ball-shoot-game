@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using BallGame.Configs;
 using BallGame.Instance;
 using UnityEngine;
@@ -7,6 +8,8 @@ namespace BallGame.Gameplay
 {
     public class Infection : MonoBehaviour
     {
+        public event Action OnInfectionComplete;
+        
         private ObjectFactory<ParticleSystem> _particleSystemFactory;
         private InfectionConfig _infectionConfig;
         
@@ -47,9 +50,11 @@ namespace BallGame.Gameplay
             
             transform.localScale = _infectionConfig.InfectedScale;
             yield return new WaitForSeconds(0.5f);
-            
+           
             _particleSystemFactory.ReleaseObject(explosionEffect);
             gameObject.SetActive(false);
+            
+            OnInfectionComplete?.Invoke();
         }
 
         public void StartInfection()

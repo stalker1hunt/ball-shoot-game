@@ -4,9 +4,16 @@ namespace BallGame.Gameplay
 {
     public class ObstacleController : MonoBehaviour
     {
-        public void Infect()
+        public Infection Infection { get; private set; }
+      
+        public void AddInfection()
         {
-            gameObject.AddComponent<Infection>().StartInfection();
+            Infection = gameObject.AddComponent<Infection>();
+        }
+        
+        public void StartInfection()
+        {
+            Infection.StartInfection();
         }
     }
 }

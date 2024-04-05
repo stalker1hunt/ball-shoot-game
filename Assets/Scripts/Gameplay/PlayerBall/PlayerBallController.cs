@@ -128,13 +128,17 @@ namespace BallGame.Gameplay.PlayerBall
 
         private IEnumerator InfectObstaclesSequentially(List<ObstacleController> obstaclesToInfect)
         {
+            var numeratorInfected = 0;
+            
             for (var index = 0; index < obstaclesToInfect.Count; index++)
             {
                 var obstacle = obstaclesToInfect[index];
                
                 try
                 {
-                    obstacle.Infect();
+                    obstacle.AddInfection();
+                    obstacle.Infection.OnInfectionComplete += OnInfectionOnOnInfectionComplete;
+                    obstacle.StartInfection();
                 }
                 catch (Exception e)
                 {
@@ -147,7 +151,14 @@ namespace BallGame.Gameplay.PlayerBall
             _currentBallShot.OnShotHitObstacle -= OnShotHitObstacle;
             _ballShotFactory.ReleaseObject(_currentBallShot);
             
-            _playerBallMovement.TryJumpToNextTarget(_target);
+            void OnInfectionOnOnInfectionComplete()
+            {
+                numeratorInfected++;
+                if(numeratorInfected == obstaclesToInfect.Count)
+                {
+                    _playerBallMovement.TryJumpToNextTarget(_target);
+                }
+            }
         }
     }
 }

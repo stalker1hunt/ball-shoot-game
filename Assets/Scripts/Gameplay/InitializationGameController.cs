@@ -24,7 +24,7 @@ namespace BallGame.Gameplay
                 .GetConfig<PlayerBallConfig>(ConfigsConstants.PlayerBallConfigKey);
             
             playerBallConfig.SetupTarget(_doorController.TargetPosition);
-            
+
             AddInitializationGameCommand(new InitializationGameCommand<PlayerBallSpawnController>(_playerBallSpawnController));
             AddInitializationGameCommand(new InitializationGameCommand<DoorController>(_doorController));
             AddInitializationGameCommand(new InitializationGameCommand<ObstacleSpawnController>(_obstacleSpawnController));

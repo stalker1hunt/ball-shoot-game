@@ -9,11 +9,11 @@ namespace BallGame.Gameplay.Obstacle
         private ObjectFactory<ObstacleController> _obstacleFactory;
  
         [SerializeField] 
-        private float arenaSize;
+        private float _arenaSize;
         [SerializeField] 
-        private int obstaclesCount;
+        private int _obstaclesCount;
         [SerializeField] 
-        private float minDistance;
+        private float _minDistance;
         
         [SerializeField]
         private Transform _obstacleParent;
@@ -27,9 +27,9 @@ namespace BallGame.Gameplay.Obstacle
         private void SpawnObstacles()
         {
             int attempts = 0;
-            int maxAttempts = obstaclesCount * 10;
+            int maxAttempts = _obstaclesCount * 10;
 
-            for (int i = 0; i < obstaclesCount && attempts < maxAttempts; i++)
+            for (int i = 0; i < _obstaclesCount && attempts < maxAttempts; i++)
             {
                 Vector3 position = GetRandomPosition();
                 if (IsPositionValid(position))
@@ -49,9 +49,9 @@ namespace BallGame.Gameplay.Obstacle
         private Vector3 GetRandomPosition()
         {
             return new Vector3(
-                Random.Range(-arenaSize / 2, arenaSize / 2),
+                Random.Range(-_arenaSize / 2, _arenaSize / 2),
                 1f,
-                Random.Range(-arenaSize / 2, arenaSize / 2)
+                Random.Range(-_arenaSize / 2, _arenaSize / 2)
             );
         }
 
@@ -59,7 +59,7 @@ namespace BallGame.Gameplay.Obstacle
         {
             foreach (var existingObstacle in FindObjectsOfType<ObstacleController>())
             {
-                if (Vector3.Distance(position, existingObstacle.transform.position) < minDistance)
+                if (Vector3.Distance(position, existingObstacle.transform.position) < _minDistance)
                     return false;
             }
             return true;

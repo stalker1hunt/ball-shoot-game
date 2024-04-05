@@ -28,7 +28,9 @@ namespace BallGame.Gameplay.PlayerBall
             Vector3 pathStart = transform.position;
             Vector3 pathEnd = GetNextJumpTargetOnPath(_globalTarget);
 
-            if (IsPathClear(pathStart, pathEnd, _jumpDistance)) 
+            float playerBallSize = transform.localScale.x;
+                
+            if (IsPathClear(pathStart, pathEnd, _jumpDistance, playerBallSize)) 
             {
                 if(Vector3.Distance(pathEnd, _globalTarget.position) <= _jumpDistance) 
                 {
@@ -68,11 +70,13 @@ namespace BallGame.Gameplay.PlayerBall
             TryJumpToNextTarget(_globalTarget);
         }
 
-        private bool IsPathClear(Vector3 pathStart, Vector3 pathEnd, float pathWidth)
+        private bool IsPathClear(Vector3 pathStart, Vector3 pathEnd, float pathWidth, float playerSize)
         {
             float distance = Vector3.Distance(pathStart, pathEnd);
             Vector3 direction = (pathEnd - pathStart).normalized;
-            Vector3 halfExtents = new Vector3(pathWidth / 2, 0.1f, distance / 2);
+    
+            Vector3 halfExtents = new Vector3(pathWidth / 2, playerSize / 2, distance / 2);
+    
             Quaternion orientation = Quaternion.LookRotation(direction);
             Vector3 center = pathStart + direction * distance / 2;
 

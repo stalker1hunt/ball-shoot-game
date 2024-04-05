@@ -1,44 +1,51 @@
-﻿using UnityEngine;
+﻿using BallGame.Gameplay.PlayerBall;
+using BallGame.Initialization;
+using UnityEngine;
 
 namespace BallGame.Gameplay
 {
-    public class PathRenderer : MonoBehaviour
+    public class PathRenderer : MonoBehaviour, IInitialization
     {
-        public Transform playerTransform;
-        public Transform doorTransform;
-        private GameObject pathCube;
+        [SerializeField]
+        public Transform _playerTransform;
+        [SerializeField]
+        public Transform _doorTransform;
+
+        private GameObject _pathCube;
+        
+        private PlayerBallController _playerBallController;
 
         private void Start()
         {
-            pathCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            Destroy(pathCube.GetComponent<BoxCollider>());
+            _pathCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            Destroy(_pathCube.GetComponent<BoxCollider>());
 
-            pathCube.GetComponent<Renderer>().material.color = Color.yellow;
+            _pathCube.GetComponent<Renderer>().material.color = Color.yellow;
+        }
 
+        public void Initialization()
+        {
             UpdatePath();
+            _playerBallController = ServiceLocator.GetService<PlayerBallController>();
+            _playerBallController.OnSizeChanged += HandleSizeChanged;
+        }
+
+        private void HandleSizeChanged(float newSize)
+        {
+            _pathCube.transform.localScale = new Vector3(newSize, _pathCube.transform.localScale.y, _pathCube.transform.localScale.z);
         }
 
         private void UpdatePath()
         {
-            Vector3 startPoint = playerTransform.position;
-            Vector3 endPoint = doorTransform.position;
+            Vector3 startPoint = _playerTransform.position;
+            Vector3 endPoint = _doorTransform.position;
 
             Vector3 direction = (endPoint - startPoint).normalized;
             float distance = Vector3.Distance(startPoint, endPoint);
 
-            pathCube.transform.position = startPoint + direction * distance / 2;
-            pathCube.transform.localScale = new Vector3(1f, 0.1f, distance);
-            pathCube.transform.LookAt(doorTransform.position); // Куб "дивиться" на двері
-        }
-
-        private void Update()
-        {
-            if (playerTransform.hasChanged || doorTransform.hasChanged)
-            {
-                UpdatePath();
-                playerTransform.hasChanged = false;
-                doorTransform.hasChanged = false;
-            }
+            _pathCube.transform.position = startPoint + direction * distance / 2;
+            _pathCube.transform.localScale = new Vector3(1f, 0.1f, distance);
+            _pathCube.transform.LookAt(_doorTransform.position);
         }
     }
 }

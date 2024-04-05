@@ -10,6 +10,8 @@ namespace BallGame.Gameplay.PlayerBall
 {
     public class PlayerBallController : MonoBehaviour
     {
+        public event Action<float> OnSizeChanged;
+        
         private ObjectFactory<BallShotController> _ballShotFactory;
         private BallShotController _currentBallShot;
         private Transform _target;
@@ -105,6 +107,7 @@ namespace BallGame.Gameplay.PlayerBall
             {
                 transform.localScale = newPlayerScale;
                 _currentBallShot.transform.localScale = new Vector3(currentShotScale, currentShotScale, currentShotScale);
+                OnSizeChanged?.Invoke(newPlayerScale.x);
             }
             else
             {

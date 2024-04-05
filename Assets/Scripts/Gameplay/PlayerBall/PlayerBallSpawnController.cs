@@ -14,7 +14,11 @@ namespace BallGame.Gameplay.PlayerBall
            var playerBallConfig = ServiceLocator.GetService<ConfigService>()
                 .GetConfig<PlayerBallConfig>(ConfigsConstants.PlayerBallConfigKey);
 
-            Instantiate(playerBallConfig.PlayerBallPrefab, _playerBallSpawnPoint.position, Quaternion.identity).Setup(playerBallConfig);
+           var playerBall = Instantiate(playerBallConfig.PlayerBallPrefab, _playerBallSpawnPoint.position,
+               Quaternion.identity);
+           playerBall.Setup(playerBallConfig);
+
+           ServiceLocator.RegisterService(playerBall);
         }
     }
 }

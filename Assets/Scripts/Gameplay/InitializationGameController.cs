@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using BallGame.Configs;
+using BallGame.Gameplay.Obstacle;
 using BallGame.Gameplay.PlayerBall;
 using BallGame.Initialization;
 using UnityEngine;
@@ -10,6 +11,8 @@ namespace BallGame.Gameplay
     {
         [SerializeField]
         private PlayerBallSpawnController _playerBallSpawnController;
+        [SerializeField]
+        private ObstacleSpawnController _obstacleSpawnController;
         [SerializeField]
         private DoorController _doorController;
         
@@ -24,6 +27,7 @@ namespace BallGame.Gameplay
             
             AddInitializationGameCommand(new InitializationGameCommand<PlayerBallSpawnController>(_playerBallSpawnController));
             AddInitializationGameCommand(new InitializationGameCommand<DoorController>(_doorController));
+            AddInitializationGameCommand(new InitializationGameCommand<ObstacleSpawnController>(_obstacleSpawnController));
             
             foreach (var command in _initializationCommands)
             {

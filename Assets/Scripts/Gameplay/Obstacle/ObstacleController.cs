@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace BallGame.Gameplay
+namespace BallGame.Gameplay.Obstacle
 {
     public class ObstacleController : MonoBehaviour
     {

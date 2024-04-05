@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BallGame.Gameplay.Obstacle;
 using UnityEngine;
 
 namespace BallGame.Gameplay

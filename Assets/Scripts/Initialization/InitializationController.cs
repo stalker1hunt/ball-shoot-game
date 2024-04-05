@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using BallGame.Configs;
 using BallGame.Gameplay;
+using BallGame.Gameplay.Obstacle;
 using BallGame.Instance;
 using BallGame.StateMachine.States;
 using UnityEngine;
@@ -20,9 +21,11 @@ namespace BallGame.Initialization
             
             var infectionConfig = configService.GetConfig<InfectionConfig>(ConfigsConstants.InfectionConfigKey);
             var playerBallConfig = configService.GetConfig<PlayerBallConfig>(ConfigsConstants.PlayerBallConfigKey);
+            var obstacleConfig = configService.GetConfig<ObstacleConfig>(ConfigsConstants.ObstacleConfigKey);
             
             var particleSystemFactory = new ObjectFactory<ParticleSystem>(infectionConfig.InfectionEffect);
             var ballShotFactory = new ObjectFactory<BallShotController>(playerBallConfig.BallShotPrefab);
+            var obstacleFactory = new ObjectFactory<ObstacleController>(obstacleConfig.ObstaclePrefab);
             
             var stateMachine = new StateMachine.StateMachine();
             stateMachine.ChangeState(new StartState());
@@ -32,6 +35,7 @@ namespace BallGame.Initialization
             
             AddInitializationCommand(new RegisterServiceCommand<ObjectFactory<ParticleSystem>>(particleSystemFactory));
             AddInitializationCommand(new RegisterServiceCommand<ObjectFactory<BallShotController>>(ballShotFactory));
+            AddInitializationCommand(new RegisterServiceCommand<ObjectFactory<ObstacleController>>(obstacleFactory));
 
             foreach (var command in _initializationCommands)
             {

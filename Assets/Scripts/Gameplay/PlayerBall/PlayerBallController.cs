@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using BallGame.Configs;
+using BallGame.Gameplay.Obstacle;
 using BallGame.Instance;
 using UnityEngine;
 

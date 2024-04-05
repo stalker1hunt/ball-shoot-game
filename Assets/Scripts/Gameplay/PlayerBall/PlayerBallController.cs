@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using BallGame.Configs;
 using BallGame.Gameplay.Obstacle;
 using BallGame.Instance;
+using BallGame.StateMachine;
 using UnityEngine;
 
 namespace BallGame.Gameplay.PlayerBall
@@ -14,7 +15,10 @@ namespace BallGame.Gameplay.PlayerBall
         
         private ObjectFactory<BallShotController> _ballShotFactory;
         private BallShotController _currentBallShot;
+        private GameState _gameState;
         private Transform _target;
+        
+        private IStateMachine _stateMachine;
         
         [SerializeField]
         private PlayerBallMovement _playerBallMovement;
@@ -22,7 +26,7 @@ namespace BallGame.Gameplay.PlayerBall
         [SerializeField]
         private Transform _shotSpawnPoint;
         
-        private float delayBetweenInfections = 0.1f;
+        private float _delayBetweenInfections = 0.1f;
 
         private float _maxShotScale;
         private float _shotChargeRate;
@@ -30,9 +34,19 @@ namespace BallGame.Gameplay.PlayerBall
         
         private float currentShotScale = 0f;
 
+        private void Awake()
+        {
+            _playerBallMovement.OnTargetReached += () =>
+            {
+                _gameState.EndGame();
+            };
+        }
+
         public void Setup(PlayerBallConfig playerBallConfig)
         {
             _ballShotFactory = ServiceLocator.GetService<ObjectFactory<BallShotController>>();
+            _gameState = ServiceLocator.GetService<GameState>();
+            _stateMachine = ServiceLocator.GetService<StateMachine.StateMachine>();
     
             _target = playerBallConfig.TargetPosition;
             _maxShotScale = playerBallConfig.MaxShotScale;
@@ -42,6 +56,9 @@ namespace BallGame.Gameplay.PlayerBall
 
         private void Update()
         {
+            if(_gameState.IsGameplay == false)
+                return;
+            
             if (Input.touchCount > 0)
             {
                 Touch touch = Input.GetTouch(0);
@@ -64,26 +81,26 @@ namespace BallGame.Gameplay.PlayerBall
                     ReleaseShot();
                 }
             }
-            else
+            
+            #if UNITY_EDITOR
+            if (Input.GetMouseButtonDown(0))
             {
-                if (Input.GetMouseButtonDown(0))
-                {
-                    CreateShot();
-                }
+                CreateShot();
+            }
 
-                if (Input.GetMouseButton(0))
+            if (Input.GetMouseButton(0))
+            {
+                if (_currentBallShot != null)
                 {
-                    if (_currentBallShot != null)
-                    {
-                        ChargeShot();
-                    }
-                }
-
-                if (Input.GetMouseButtonUp(0))
-                {
-                    ReleaseShot();
+                    ChargeShot();
                 }
             }
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                ReleaseShot();
+            }
+            #endif
         }
 
         private void CreateShot()
@@ -127,6 +144,7 @@ namespace BallGame.Gameplay.PlayerBall
 
         private void OnShotHitObstacle(List<ObstacleController> obstaclesToInfect)
         {
+            _ballShotFactory.ReleaseObject(_currentBallShot);
             StartCoroutine(InfectObstaclesSequentially(obstaclesToInfect));
         }
 
@@ -149,11 +167,10 @@ namespace BallGame.Gameplay.PlayerBall
                     Debug.LogException(e);
                 }
 
-                yield return new WaitForSeconds(delayBetweenInfections);
+                yield return new WaitForSeconds(_delayBetweenInfections);
             }
             
             _currentBallShot.OnShotHitObstacle -= OnShotHitObstacle;
-            _ballShotFactory.ReleaseObject(_currentBallShot);
             
             void OnInfectionOnOnInfectionComplete()
             {

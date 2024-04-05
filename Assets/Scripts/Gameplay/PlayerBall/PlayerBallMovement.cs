@@ -1,10 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 namespace BallGame.Gameplay.PlayerBall
 {
     public class PlayerBallMovement : MonoBehaviour
     {
+        public event Action OnTargetReached;
+        
         [SerializeField]
         private float _jumpHeight = 0.5f;
         [SerializeField]
@@ -35,6 +38,7 @@ namespace BallGame.Gameplay.PlayerBall
                 if(Vector3.Distance(pathEnd, _globalTarget.position) <= _jumpDistance) 
                 {
                     Debug.Log("Reached the global target!");
+                    OnTargetReached?.Invoke();
                     return;
                 }
                 StartCoroutine(JumpToNextTarget(pathEnd));

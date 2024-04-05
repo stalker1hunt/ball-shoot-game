@@ -11,7 +11,7 @@ namespace BallGame.Gameplay
         
         private Transform player;
         public Animator doorAnimator;
-        public float openDistance = 5.0f;
+        public float openDistance = 1f;
         private bool doorOpened = false;
 
         private void Update()

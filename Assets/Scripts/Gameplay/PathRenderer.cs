@@ -15,16 +15,12 @@ namespace BallGame.Gameplay
         
         private PlayerBallController _playerBallController;
 
-        private void Start()
+        public void Initialization()
         {
             _pathCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
             Destroy(_pathCube.GetComponent<BoxCollider>());
-
             _pathCube.GetComponent<Renderer>().material.color = Color.yellow;
-        }
-
-        public void Initialization()
-        {
+            
             UpdatePath();
             _playerBallController = ServiceLocator.GetService<PlayerBallController>();
             _playerBallController.OnSizeChanged += HandleSizeChanged;

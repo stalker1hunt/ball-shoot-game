@@ -32,6 +32,7 @@ namespace BallGame.Initialization
             
             AddInitializationCommand(new RegisterServiceCommand<ConfigService>(configService));
             AddInitializationCommand(new RegisterServiceCommand<StateMachine.StateMachine>(stateMachine));
+            AddInitializationCommand(new RegisterServiceCommand<GameState>(new GameState()));
             
             AddInitializationCommand(new RegisterServiceCommand<ObjectFactory<ParticleSystem>>(particleSystemFactory));
             AddInitializationCommand(new RegisterServiceCommand<ObjectFactory<BallShotController>>(ballShotFactory));

@@ -20,5 +20,11 @@ namespace BallGame.Instance
         {
             pool.ReturnToPool(objectToRelease);
         }
+        
+        public void ClearPool()
+        {
+            pool.ClearPool();
+            pool = null;
+        }
     }
 }

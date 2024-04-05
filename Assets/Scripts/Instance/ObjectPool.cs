@@ -42,5 +42,10 @@ namespace BallGame.Instance
             instance.gameObject.SetActive(false);
             objects.Enqueue(instance);
         }
+        
+        public void ClearPool()
+        {
+            objects.Clear();
+        }
     }
 }

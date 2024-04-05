@@ -20,7 +20,7 @@ namespace BallGame.Gameplay.PlayerBall
 
         private Transform _globalTarget;
 
-        private bool isJumping;
+        public bool isJumping;
 
         public void TryJumpToNextTarget(Transform target)
         {
@@ -35,7 +35,7 @@ namespace BallGame.Gameplay.PlayerBall
                 
             if (IsPathClear(pathStart, pathEnd, _jumpDistance, playerBallSize)) 
             {
-                if(Vector3.Distance(pathEnd, _globalTarget.position) <= _jumpDistance) 
+                if(Vector3.Distance(pathEnd, _globalTarget.position) <= _jumpDistance + 1) 
                 {
                     Debug.Log("Reached the global target!");
                     OnTargetReached?.Invoke();
@@ -79,7 +79,7 @@ namespace BallGame.Gameplay.PlayerBall
             float distance = Vector3.Distance(pathStart, pathEnd);
             Vector3 direction = (pathEnd - pathStart).normalized;
     
-            Vector3 halfExtents = new Vector3(pathWidth / 2, playerSize / 2, distance / 2);
+            Vector3 halfExtents = new Vector3(pathWidth / 3, playerSize / 2, distance / 2);
     
             Quaternion orientation = Quaternion.LookRotation(direction);
             Vector3 center = pathStart + direction * distance / 2;

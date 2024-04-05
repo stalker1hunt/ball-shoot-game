@@ -1,4 +1,5 @@
-﻿using BallGame.Initialization;
+﻿using BallGame.Gameplay.PlayerBall;
+using BallGame.Initialization;
 using UnityEngine;
 
 namespace BallGame.Gameplay
@@ -9,26 +10,27 @@ namespace BallGame.Gameplay
         private Transform _targetPosition;
         public Transform TargetPosition => _targetPosition; 
         
-        private Transform player;
-        public Animator doorAnimator;
-        public float openDistance = 1f;
-        private bool doorOpened = false;
+        [SerializeField]
+        private Material _openMaterial;
 
-        private void Update()
-        {
-            /*
-            float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-
-            if (distanceToPlayer <= openDistance && !doorOpened)
-            {
-                doorAnimator.SetTrigger("Open");
-                doorOpened = true;
-            }
-            */
-        }
-
+        private PlayerBallController _playerBallController;
+        
         public void Initialization()
         {
+            _playerBallController = ServiceLocator.GetService<PlayerBallController>();
+            _playerBallController.OnWin += OpenDoor;
+            
+            Application.quitting += ApplicationOnquitting;
+        }
+
+        private void ApplicationOnquitting()
+        {
+            _openMaterial.color = Color.white;
+        }
+
+        private void OpenDoor()
+        {
+            _openMaterial.color = Color.green;
         }
     }
 }

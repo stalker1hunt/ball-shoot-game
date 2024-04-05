@@ -8,6 +8,7 @@ namespace BallGame.Gameplay
     public class BallShotController : MonoBehaviour
     {
         public event Action<List<ObstacleController>> OnShotHitObstacle;
+        public event Action OnHitTarget;
         
         [SerializeField]
         private Rigidbody _rigidbody; 
@@ -74,6 +75,10 @@ namespace BallGame.Gameplay
                 }
                 
                 OnShotHitObstacle?.Invoke(obstaclesToInfect);
+            }
+            else if (other.gameObject.CompareTag("Target"))
+            {
+                OnHitTarget?.Invoke();
             }
         }
         

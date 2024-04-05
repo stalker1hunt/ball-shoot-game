@@ -5,6 +5,9 @@ using BallGame.Configs;
 using BallGame.Gameplay.Obstacle;
 using BallGame.Instance;
 using BallGame.StateMachine;
+using BallGame.UI;
+using BallGame.UI.Screens;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace BallGame.Gameplay.PlayerBall
@@ -12,13 +15,16 @@ namespace BallGame.Gameplay.PlayerBall
     public class PlayerBallController : MonoBehaviour
     {
         public event Action<float> OnSizeChanged;
-        
+        public event Action OnLose;
+        public event Action OnWin;
+
         private ObjectFactory<BallShotController> _ballShotFactory;
         private BallShotController _currentBallShot;
         private GameState _gameState;
         private Transform _target;
         
         private IStateMachine _stateMachine;
+        private ScreenUiController _screenUiController;
         
         [SerializeField]
         private PlayerBallMovement _playerBallMovement;
@@ -38,7 +44,10 @@ namespace BallGame.Gameplay.PlayerBall
         {
             _playerBallMovement.OnTargetReached += () =>
             {
+                EndGameScreen endGameScreen = (EndGameScreen)_screenUiController.ShowScreenById(ScreenConstants.EndGameScreen);
+                endGameScreen.Setup(true);
                 _gameState.EndGame();
+                OnWin?.Invoke();
             };
         }
 
@@ -47,6 +56,7 @@ namespace BallGame.Gameplay.PlayerBall
             _ballShotFactory = ServiceLocator.GetService<ObjectFactory<BallShotController>>();
             _gameState = ServiceLocator.GetService<GameState>();
             _stateMachine = ServiceLocator.GetService<StateMachine.StateMachine>();
+            _screenUiController = ServiceLocator.GetService<ScreenUiController>();
     
             _target = playerBallConfig.TargetPosition;
             _maxShotScale = playerBallConfig.MaxShotScale;
@@ -57,6 +67,9 @@ namespace BallGame.Gameplay.PlayerBall
         private void Update()
         {
             if(_gameState.IsGameplay == false)
+                return;
+            
+            if(_playerBallMovement.isJumping)
                 return;
             
             if (Input.touchCount > 0)
@@ -120,6 +133,12 @@ namespace BallGame.Gameplay.PlayerBall
             float scaleDecrease = _shotChargeRate * Time.deltaTime;
             Vector3 newPlayerScale = transform.localScale - new Vector3(scaleDecrease, scaleDecrease, scaleDecrease);
             
+            if (newPlayerScale.x < _minPlayerScale)
+            {
+                LoseGame();
+                return;
+            }
+            
             if (newPlayerScale.x >= _minPlayerScale)
             {
                 transform.localScale = newPlayerScale;
@@ -132,6 +151,15 @@ namespace BallGame.Gameplay.PlayerBall
             }
         }
         
+        private void LoseGame()
+        {
+            _gameState.EndGame(); 
+            EndGameScreen endGameScreen = (EndGameScreen)_screenUiController.ShowScreenById(ScreenConstants.EndGameScreen);
+            endGameScreen.Setup(false);
+            
+            OnLose?.Invoke();
+        }
+        
         private void ReleaseShot()
         {
             if (_currentBallShot != null)
@@ -139,6 +167,10 @@ namespace BallGame.Gameplay.PlayerBall
                 _currentBallShot.GetComponent<BallShotController>().Initiate(_target);
                 _currentBallShot.SetExplosionRadius(1);
                 _currentBallShot.OnShotHitObstacle += OnShotHitObstacle;
+                _currentBallShot.OnHitTarget += () =>
+                {
+                    _playerBallMovement.TryJumpToNextTarget(_target);
+                };
             }
         }
 

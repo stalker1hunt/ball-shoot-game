@@ -19,6 +19,8 @@ namespace BallGame.UI
             gameObject.SetActive(false);
         }
 
-        public abstract void Initialization();
+        public virtual void Initialization()
+        {
+        }
     }
 }

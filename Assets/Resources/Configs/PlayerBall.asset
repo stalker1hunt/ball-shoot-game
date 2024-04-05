@@ -16,6 +16,6 @@ MonoBehaviour:
     type: 3}
   _ballShotPrefab: {fileID: 1096227594533763633, guid: c8d23155782a1d840aa7aa91a5781c2d,
     type: 3}
-  maxShotScale: 0.3
-  shotChargeRate: 0.5
-  minPlayerScale: 0.5
+  _maxShotScale: 1
+  _shotChargeRate: 1
+  _minPlayerScale: 0.5

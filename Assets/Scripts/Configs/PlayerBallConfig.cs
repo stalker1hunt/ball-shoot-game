@@ -16,18 +16,16 @@ namespace BallGame.Configs
         public BallShotController BallShotPrefab => _ballShotPrefab;
         
         [SerializeField]
-        private float maxShotScale = 0.3f; 
+        private float _maxShotScale = 0.3f; 
+        public float MaxShotScale => _maxShotScale;
+        
+        [SerializeField]
+        private float _shotChargeRate = 0.5f;
+        public float ShotChargeRate => _shotChargeRate;
 
         [SerializeField]
-        private float shotChargeRate = 0.5f;
-     
-        [SerializeField]
-        private float minPlayerScale = 0.5f;
-       
-        public float MaxShotScale { get; }
-        public float ShotChargeRate { get; }
-        public float MinPlayerScale { get; }
-        
+        private float _minPlayerScale = 0.5f;
+        public float MinPlayerScale => _minPlayerScale;
 
         public Transform TargetPosition { get; private set; }
         public void SetupTarget(Transform target) => TargetPosition = target;

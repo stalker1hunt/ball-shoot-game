@@ -98,6 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfa279ca5a564426ae416bc1e954fc21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerBallMovement: {fileID: 3750191898849202439}
   _shotSpawnPoint: {fileID: 3750191898849202434}
 --- !u!114 &3750191898849202439
 MonoBehaviour:
@@ -111,10 +112,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7755fb54b3de45ef994bdf960685c602, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpHeight: 2
-  jumpDistance: 1
-  jumpSpeed: 2
-  obstacleLayer:
+  _jumpHeight: 0.5
+  _jumpDistance: 1
+  _jumpSpeed: 2
+  _obstacleLayer:
     serializedVersion: 2
     m_Bits: 8
 --- !u!54 &3750191898849202436

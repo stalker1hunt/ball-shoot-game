@@ -34,7 +34,7 @@ namespace BallGame.Gameplay
             Vector3 initialScale = transform.localScale;
             float timer = 0f;
 
-            while (timer <= 1f)
+            while (timer <= 0.5f)
             {
                 transform.localScale = Vector3.Lerp(initialScale, _infectionConfig.InfectedScale, timer);
                 timer += Time.deltaTime;

@@ -1,4 +1,7 @@
-﻿using BallGame.Configs;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using BallGame.Configs;
 using BallGame.Instance;
 using UnityEngine;
 
@@ -8,27 +11,32 @@ namespace BallGame.Gameplay.PlayerBall
     {
         private ObjectFactory<BallShotController> _ballShotFactory;
         private BallShotController _currentBallShot;
+        private Transform _target;
+        
+        [SerializeField]
+        private PlayerBallMovement _playerBallMovement;
         
         [SerializeField]
         private Transform _shotSpawnPoint;
         
-        private float _maxShotScale = 0.3f; 
-        private float _shotChargeRate = 0.5f;
-        private float _minPlayerScale = 0.5f;
+        private float delayBetweenInfections = 0.1f;
+
+        private float _maxShotScale;
+        private float _shotChargeRate;
+        private float _minPlayerScale;
         
         private float currentShotScale = 0f;
-        private Transform _target;
 
         public void Setup(PlayerBallConfig playerBallConfig)
         {
             _ballShotFactory = ServiceLocator.GetService<ObjectFactory<BallShotController>>();
-            
+    
             _target = playerBallConfig.TargetPosition;
             _maxShotScale = playerBallConfig.MaxShotScale;
             _shotChargeRate = playerBallConfig.ShotChargeRate;
             _minPlayerScale = playerBallConfig.MinPlayerScale;
         }
-        
+
         private void Update()
         {
             if (Input.touchCount > 0)
@@ -91,7 +99,7 @@ namespace BallGame.Gameplay.PlayerBall
 
             float scaleDecrease = _shotChargeRate * Time.deltaTime;
             Vector3 newPlayerScale = transform.localScale - new Vector3(scaleDecrease, scaleDecrease, scaleDecrease);
-
+            
             if (newPlayerScale.x >= _minPlayerScale)
             {
                 transform.localScale = newPlayerScale;
@@ -109,8 +117,37 @@ namespace BallGame.Gameplay.PlayerBall
             {
                 _currentBallShot.GetComponent<BallShotController>().Initiate(_target);
                 _currentBallShot.SetExplosionRadius(1);
-                _currentBallShot = null;
+                _currentBallShot.OnShotHitObstacle += OnShotHitObstacle;
             }
+        }
+
+        private void OnShotHitObstacle(List<ObstacleController> obstaclesToInfect)
+        {
+            StartCoroutine(InfectObstaclesSequentially(obstaclesToInfect));
+        }
+
+        private IEnumerator InfectObstaclesSequentially(List<ObstacleController> obstaclesToInfect)
+        {
+            for (var index = 0; index < obstaclesToInfect.Count; index++)
+            {
+                var obstacle = obstaclesToInfect[index];
+               
+                try
+                {
+                    obstacle.Infect();
+                }
+                catch (Exception e)
+                {
+                    Debug.LogException(e);
+                }
+
+                yield return new WaitForSeconds(delayBetweenInfections);
+            }
+            
+            _currentBallShot.OnShotHitObstacle -= OnShotHitObstacle;
+            _ballShotFactory.ReleaseObject(_currentBallShot);
+            
+            _playerBallMovement.TryJumpToNextTarget(_target);
         }
     }
 }
